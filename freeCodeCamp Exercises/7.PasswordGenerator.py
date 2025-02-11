@@ -6,6 +6,7 @@
 # own password generator program.
 
 # import random
+import re
 import secrets
 import string
 
@@ -63,7 +64,30 @@ def generate_password(length):
         # Also, tuples are immutable, unlike lists.
 
         # Constraints for the generated password
-        constraints = []
+        constraints = [
+            (nums, r'\d'),
+            (lowercase, r'[a-z]'),
+            (uppercase, r'[A-Z]'),            
+            (special_chars, fr'[{symbols}]')            
+        ]
+
+        # Check constraints
+        count = 0
+        '''
+        Instead of using a loop and a counter variable, I'm going to achieve the same result with a different approach in the next few steps.
+        
+        I'll start by initializing the counter variable to 0.
+        Then, I'll use a for loop to iterate over the constraints list.
+        For each constraint, I'll use the re.findall() method to find all matches of the pattern in the password.
+        If the length of the matches is greater than or equal to the constraint, I'll increment the counter.
+        Finally, if the counter is equal to the length of the constraints list, I'll break out of the loop and return the password.
+        '''
+        for constraint, pattern in constraints:
+            if constraint <= len(re.findall(pattern, password)):
+                count += 1
+        if count == 4:
+            break
+    return password
 
 
 # A regular expression, or regex, is a pattern used to match a specific combination
